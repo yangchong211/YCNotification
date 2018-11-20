@@ -134,6 +134,15 @@
             android:layout_marginTop="10dp"
             android:background="@color/bg"
             android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_15"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="15.Android 8.0 适配问题"
+            android:layout_marginTop="10dp"
+            android:background="@color/bg"
+            android:padding="10dp"/>
     </LinearLayout>
 
 </ScrollView>

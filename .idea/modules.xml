@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/YCNotification.iml" filepath="$PROJECT_DIR$/YCNotification.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/notificationLib/notificationLib.iml" filepath="$PROJECT_DIR$/notificationLib/notificationLib.iml" />
     </modules>
   </component>
 </project>
