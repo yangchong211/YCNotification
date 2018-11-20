@@ -193,7 +193,7 @@ public class NotificationUtils extends ContextWrapper {
     private boolean onlyAlertOnce = false;
     private long when = 0;
     private Uri sound = null;
-    private int defaults;
+    private int defaults = 0;
     private long[] pattern = null;
 
     /**

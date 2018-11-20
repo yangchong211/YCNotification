@@ -177,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void sendNotification3() {
+        long[] vibrate = new long[]{0, 500, 1000, 1500};
         //处理点击Notification的逻辑
         //创建intent
         Intent resultIntent = new Intent(this, TestActivity.class);
@@ -187,12 +188,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         NotificationUtils notificationUtils = new NotificationUtils(this);
         notificationUtils
+                //让通知左右滑的时候是否可以取消通知
                 .setOngoing(true)
+                //设置内容点击处理intent
                 .setContentIntent(resultPendingIntent)
+                //设置状态栏的标题
                 .setTicker("来通知消息啦")
+                //设置自定义view通知栏布局
                 .setContent(getRemoteViews())
+                //设置sound
                 .setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI)
+                //设置优先级
                 .setPriority(Notification.PRIORITY_DEFAULT)
+                //自定义震动效果
+                .setVibrate(vibrate)
+                //必须设置的属性，发送通知
                 .sendNotification(3,"这个是标题3", "这个是内容3", R.mipmap.ic_launcher);
     }
 
