@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NotificationUtils notificationUtils = new NotificationUtils(this);
         notificationUtils
                 .setContentIntent(resultPendingIntent)
-                .sendNotification(2,"这个是标题2", "这个是内容2", R.mipmap.ic_launcher);
+                .sendNotificationCompat(2,"这个是标题2", "这个是内容2", R.mipmap.ic_launcher);
     }
 
 
@@ -252,38 +252,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void sendNotification9() {
-        Notification.Builder mBuilder = new Notification.Builder(this.getApplicationContext())
+        NotificationUtils notificationUtils = new NotificationUtils(this);
+        notificationUtils
+                //让通知左右滑的时候是否可以取消通知
+                .setOngoing(true)
+                //设置状态栏的标题
+                .setTicker("有新消息呢9")
+                //设置自定义view通知栏布局
+                .setContent(getRemoteViews())
+                //设置sound
                 .setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI)
-                .setSmallIcon(R.mipmap.ic_launcher)                                         //设置通知的图标
-                .setTicker("有新消息呢9")                                                     //设置状态栏的标题
-                .setContentTitle("这个是标题9")                                               //设置标题
-                .setContentText("这个是内容9")                                                //消息内容
-                .setDefaults(Notification.DEFAULT_ALL)                                       //设置默认的提示音
-                .setOngoing(false)                                                           //让通知左右滑的时候不能取消通知
-                .setAutoCancel(true);                                                        //打开程序后图标消失
-
-        Notification notification = mBuilder.build();
-        //设置 Notification 的 flags = FLAG_NO_CLEAR
-        //FLAG_NO_CLEAR 表示该通知不能被状态栏的清除按钮给清除掉,也不能被手动清除,但能通过 cancel() 方法清除
-        //flags 可以通过 |= 运算叠加效果
-        notification.flags |= Notification.FLAG_NO_CLEAR;
-
-        //获取NotificationManager 对象
-        mNotificationManager.notify(9, notification);
+                //设置优先级
+                .setPriority(Notification.PRIORITY_DEFAULT)
+                //自定义震动效果
+                .setFlags(Notification.FLAG_NO_CLEAR)
+                //必须设置的属性，发送通知
+                .sendNotification(9,"有新消息呢9", "这个是标题9", R.mipmap.ic_launcher);
     }
 
 
     private void sendNotification10() {
-        Notification.Builder mBuilder = new Notification.Builder(this.getApplicationContext())
-                .setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI)
-                .setSmallIcon(R.mipmap.ic_launcher)                                         //设置通知的图标
-                .setTicker("有新消息呢10")                                                     //设置状态栏的标题
-                .setContentTitle("这个是标题10")                                               //设置标题
-                .setContentText("这个是内容10")                                                //消息内容
-                .setDefaults(Notification.DEFAULT_ALL)                                       //设置默认的提示音
-                .setOngoing(false)                                                           //让通知左右滑的时候不能取消通知
-                .setAutoCancel(true);                                                        //打开程序后图标消失
-
 
         //处理点击Notification的逻辑
         //创建intent
@@ -291,25 +279,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);           //添加为栈顶Activity
         resultIntent.putExtra("what",10);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(this,10,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-        //发送pendingIntent
-        mBuilder.setContentIntent(resultPendingIntent);
 
-
-        Notification notification = mBuilder.build();
         //设置 Notification 的 flags = FLAG_NO_CLEAR
         //FLAG_NO_CLEAR 表示该通知不能被状态栏的清除按钮给清除掉,也不能被手动清除,但能通过 cancel() 方法清除
         //flags 可以通过 |= 运算叠加效果
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-        //获取NotificationManager 对象
-        mNotificationManager.notify(10, notification);
+        NotificationUtils notificationUtils = new NotificationUtils(this);
+        notificationUtils
+                //让通知左右滑的时候是否可以取消通知
+                .setOngoing(true)
+                .setContentIntent(resultPendingIntent)
+                //设置状态栏的标题
+                .setTicker("有新消息呢10")
+                //设置自定义view通知栏布局
+                .setContent(getRemoteViews())
+                .setDefaults(Notification.DEFAULT_ALL)
+                //设置sound
+                .setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI)
+                //设置优先级
+                .setPriority(Notification.PRIORITY_DEFAULT)
+                //自定义震动效果
+                .setFlags(Notification.FLAG_AUTO_CANCEL)
+                //必须设置的属性，发送通知
+                .sendNotification(10,"有新消息呢10", "这个是标题10", R.mipmap.ic_launcher);
     }
 
 
     private void sendNotification11() {
         NotificationUtils notificationUtils = new NotificationUtils(this);
         notificationUtils
-                .setOngoing(true)
+                .setOngoing(false)
                 .setTicker("来通知消息啦")
                 .setContent(getRemoteViews())
                 //.setSound(Uri.parse("android.resource://com.yc.cn.ycnotification/" + R.raw.hah))
@@ -351,27 +350,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void sendNotification13() {
-        Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("仔细看,我就执行一遍")
-                .setContentText("好了,已经一遍了~")
-                .setDefaults(Notification.DEFAULT_ALL);
-        Notification notify = builder.build();
-        notify.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
-        mNotificationManager.notify(13, notify);
+        NotificationUtils notificationUtils = new NotificationUtils(this);
+        notificationUtils
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setFlags(Notification.FLAG_ONLY_ALERT_ONCE)
+                .sendNotification(13,"仔细看,我就执行一遍","好了,已经一遍了~",R.mipmap.ic_launcher);
+
     }
 
 
     private void sendNotification14() {
-        Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("显示进度条14")
-                .setContentText("显示进度条内容，自定定义，")
-                .setProgress(100,40,true)
-                .setDefaults(Notification.DEFAULT_ALL);
-        Notification notify = builder.build();
-        notify.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
-        mNotificationManager.notify(13, notify);
+        NotificationUtils notificationUtils = new NotificationUtils(this);
+        notificationUtils
+                .setDefaults(Notification.DEFAULT_ALL)
+
+                .setFlags(Notification.FLAG_ONLY_ALERT_ONCE)
+                .sendNotification(14,"显示进度条14","显示进度条内容，自定定义",R.mipmap.ic_launcher);
     }
 
 

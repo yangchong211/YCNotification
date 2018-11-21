@@ -12,6 +12,9 @@
 - 1.2 关于8.0以上通知栏问题，一定要适配吗Android8.0通知栏吗？
     - Google这次对于8.0系统通知渠道的推广态度还是比较强硬的。如果你将项目中的targetSdkVersion指定到了26或者更高，那么Android系统就会认为你的App已经做好了8.0系统的适配工作，当然包括了通知栏的适配。这个时候如果还不使用通知渠道的话，那么你的App的通知将完全无法弹出。因此这里给大家的建议就是，一定要适配。
     - 你也可以直接使用我这个工具类，测试，是可行的
+- 1.3 Notification通知栏用法介绍及部分源码解析，请看这篇博客【**郭霖公众号授权推荐**】：https://blog.csdn.net/m0_37700275/article/details/78745024
+
+
 
 
 ### 02.使用方法介绍
@@ -101,7 +104,7 @@ public void sendNotification(int notifyId, String title, String content , int ic
 
 
 
-#### 于LICENSE
+#### 关于LICENSE
 ```
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

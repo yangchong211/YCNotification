@@ -24,6 +24,7 @@ public class NotificationUtils extends ContextWrapper {
     public static final String CHANNEL_ID = "default";
     private static final String CHANNEL_NAME = "Default_Channel";
     private NotificationManager mManager;
+    private int[] flags;
 
     public NotificationUtils(Context base) {
         super(base);
@@ -35,7 +36,13 @@ public class NotificationUtils extends ContextWrapper {
 
     @TargetApi(Build.VERSION_CODES.O)
     private void createNotificationChannel() {
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+        //第一个参数：channel_id
+        //第二个参数：channel_name
+        //第三个参数：设置通知重要性级别
+        //注意：该级别必须要在 NotificationChannel 的构造函数中指定，总共要五个级别；
+        //范围是从 NotificationManager.IMPORTANCE_NONE(0) ~ NotificationManager.IMPORTANCE_HIGH(4)
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT);
         channel.canBypassDnd();//是否绕过请勿打扰模式
         channel.enableLights(true);//闪光灯
         channel.setLockscreenVisibility(VISIBILITY_SECRET);//锁屏显示通知
@@ -76,15 +83,22 @@ public class NotificationUtils extends ContextWrapper {
      * @param content                   content
      */
     public void sendNotification(int notifyId, String title, String content , int icon) {
+        Notification build;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //android 8.0以上需要特殊处理，也就是targetSDKVersion为26以上
             //通知用到NotificationCompat()这个V4库中的方法。但是在实际使用时发现书上的代码已经过时并且Android8.0已经不支持这种写法
             Notification.Builder builder = getChannelNotification(title, content, icon);
-            getManager().notify(notifyId, builder.build());
+            build = builder.build();
         } else {
             NotificationCompat.Builder builder = getNotificationCompat(title, content, icon);
-            getManager().notify(notifyId, builder.build());
+            build = builder.build();
         }
+        if (flags!=null && flags.length>0){
+            for (int a=0 ; a<flags.length ; a++){
+                build.flags |= flags[a];
+            }
+        }
+        getManager().notify(notifyId, build);
     }
 
     /**
@@ -95,7 +109,13 @@ public class NotificationUtils extends ContextWrapper {
      */
     public void sendNotificationCompat(int notifyId, String title, String content , int icon) {
         NotificationCompat.Builder builder = getNotificationCompat(title, content, icon);
-        getManager().notify(notifyId, builder.build());
+        Notification build = builder.build();
+        if (flags!=null && flags.length>0){
+            for (int a=0 ; a<flags.length ; a++){
+                build.flags |= flags[a];
+            }
+        }
+        getManager().notify(notifyId, build);
     }
 
 
@@ -185,6 +205,8 @@ public class NotificationUtils extends ContextWrapper {
         return notificationBuilder;
     }
 
+
+
     private boolean ongoing = false;
     private RemoteViews remoteViews = null;
     private PendingIntent intent = null;
@@ -239,6 +261,10 @@ public class NotificationUtils extends ContextWrapper {
 
     /**
      * 设置优先级
+     * 注意：
+     * Android 8.0以及上，在 NotificationChannel 的构造函数中指定，总共要五个级别；
+     * Android 7.1（API 25）及以下的设备，还得调用NotificationCompat 的 setPriority方法来设置
+     *
      * @param priority                  优先级，默认是Notification.PRIORITY_DEFAULT
      * @return
      */
@@ -298,5 +324,14 @@ public class NotificationUtils extends ContextWrapper {
         return this;
     }
 
+    /**
+     * 设置flag标签
+     * @param flags                     flags
+     * @return
+     */
+    public NotificationUtils setFlags(int... flags){
+        this.flags = flags;
+        return this;
+    }
 
 }
