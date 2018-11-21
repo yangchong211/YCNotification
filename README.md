@@ -16,8 +16,11 @@
 
 
 
-
 ### 02.使用方法介绍
+- 2.0 如何使用该库
+```
+compile 'cn.yc:notificationLib:1.0.0'
+```
 - 2.1 最简单调用方式
 ```
 NotificationUtils notificationUtils = new NotificationUtils(this);

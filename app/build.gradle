@@ -22,6 +22,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:27.1.1'
-    //compile 'cn.yc:YCNotificationLib:1.0.0'
-    compile project(path: ':notificationLib')
+    compile 'cn.yc:notificationLib:1.0.0'
+    //compile project(path: ':notificationLib')
 }
