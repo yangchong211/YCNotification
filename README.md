@@ -19,7 +19,7 @@
 ### 02.使用方法介绍
 - 2.0 如何使用该库
 ```
-compile 'cn.yc:notificationLib:1.0.0'
+compile 'cn.yc:notificationLib:1.0.2'
 ```
 - 2.1 最简单调用方式
 ```
@@ -81,6 +81,14 @@ public void sendNotification(int notifyId, String title, String content , int ic
     }
 }
 ```
+- 2.4 如果你想获取Notification对象，自己发送消息也可以
+```
+NotificationUtils notificationUtils = new NotificationUtils(this);
+notificationUtils.setContent(getRemoteViews());
+Notification notification = notificationUtils.getNotification("这个是标题4", "这个是内容4", R.mipmap.ic_launcher);
+notificationUtils.getManager().notify(4,notification);
+```
+
 
 ### 04.图片展示
 - ![image](https://github.com/yangchong211/YCNotification/blob/master/image/1.png)

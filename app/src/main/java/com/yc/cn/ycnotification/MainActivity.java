@@ -210,7 +210,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void sendNotification4() {
         NotificationUtils notificationUtils = new NotificationUtils(this);
         notificationUtils.setContent(getRemoteViews());
-        notificationUtils.sendNotification(4,"这个是标题4", "这个是内容4", R.mipmap.ic_launcher);
+        Notification notification = notificationUtils.getNotification("这个是标题4", "这个是内容4", R.mipmap.ic_launcher);
+        notificationUtils.getManager().notify(4,notification);
     }
 
 

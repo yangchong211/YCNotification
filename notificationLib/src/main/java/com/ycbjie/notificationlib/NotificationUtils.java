@@ -85,6 +85,30 @@ public class NotificationUtils extends ContextWrapper {
     }
 
     /**
+     * 获取Notification
+     * @param title                     title
+     * @param content                   content
+     */
+    public Notification getNotification(String title, String content , int icon){
+        Notification build;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //android 8.0以上需要特殊处理，也就是targetSDKVersion为26以上
+            //通知用到NotificationCompat()这个V4库中的方法。但是在实际使用时发现书上的代码已经过时并且Android8.0已经不支持这种写法
+            Notification.Builder builder = getChannelNotification(title, content, icon);
+            build = builder.build();
+        } else {
+            NotificationCompat.Builder builder = getNotificationCompat(title, content, icon);
+            build = builder.build();
+        }
+        if (flags!=null && flags.length>0){
+            for (int a=0 ; a<flags.length ; a++){
+                build.flags |= flags[a];
+            }
+        }
+        return build;
+    }
+
+    /**
      * 建议使用这个发送通知
      * 调用该方法可以发送通知
      * @param notifyId                  notifyId
