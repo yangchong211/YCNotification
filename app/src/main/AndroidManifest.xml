@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.yc.cn.ycnotification">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.yc.cn.ycnotification">
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -8,15 +11,30 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity"/>
         <activity android:name=".TestActivity"/>
+        <activity android:name=".service.ServiceActivity"/>
         <receiver android:name=".ReminderReceiver"/>
+
+
+        <service android:name=".service.MyService"
+            android:foregroundServiceType="location"
+            tools:ignore="Instantiatable" />
+        <service android:name=".service.MyForegroundService"
+            android:foregroundServiceType="location" />
+
+        <service android:name=".service.MyService2"
+            android:foregroundServiceType="location"
+            tools:ignore="Instantiatable" />
+        <service android:name=".service.MyForegroundService2"
+            android:foregroundServiceType="location" />
     </application>
 
 </manifest>

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/YCNotification.iml" filepath="$PROJECT_DIR$/YCNotification.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/notificationLib/notificationLib.iml" filepath="$PROJECT_DIR$/notificationLib/notificationLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/YCNotification.iml" filepath="$PROJECT_DIR$/.idea/modules/YCNotification.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/YCNotification.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/YCNotification.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/notificationLib/YCNotification.notificationLib.iml" filepath="$PROJECT_DIR$/.idea/modules/notificationLib/YCNotification.notificationLib.iml" />
     </modules>
   </component>
 </project>
