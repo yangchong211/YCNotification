@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -77,9 +78,15 @@ public class ServiceActivity extends AppCompatActivity {
         tv6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               if (mNotificationManager!=null){
-                   mNotificationManager.cancel(DIALOG_TIME_SEC);
-               }
+//               if (mNotificationManager!=null){
+//                   mNotificationManager.cancel(DIALOG_TIME_SEC);
+//               }
+
+                if (mNotificationManager!=null){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        mNotificationManager.deleteNotificationChannel(LOCAL_CHANNEL_ID);
+                    }
+                }
             }
         });
     }
