@@ -44,6 +44,23 @@
             android:background="@color/bg"
             android:padding="10dp"/>
 
+        <TextView
+            android:id="@+id/tv_5"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="5.测试通知栏"
+            android:background="@color/bg"
+            android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_6"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="6.移除通知栏"
+            android:background="@color/bg"
+            android:padding="10dp"/>
     </LinearLayout>
 
 </ScrollView>
