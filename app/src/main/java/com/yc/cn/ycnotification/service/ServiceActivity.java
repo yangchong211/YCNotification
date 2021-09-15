@@ -1,7 +1,9 @@
 package com.yc.cn.ycnotification.service;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
+import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,16 +11,22 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
 import com.yc.cn.ycnotification.MainActivity;
 import com.yc.cn.ycnotification.R;
 import com.yc.cn.ycnotification.TestActivity;
+
+import java.util.List;
 
 public class ServiceActivity extends AppCompatActivity {
 
@@ -28,6 +36,7 @@ public class ServiceActivity extends AppCompatActivity {
     private TextView tv4;
     private TextView tv5;
     private TextView tv6;
+    private TextView tv7;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +50,7 @@ public class ServiceActivity extends AppCompatActivity {
         tv4 = findViewById(R.id.tv_4);
         tv5 = findViewById(R.id.tv_5);
         tv6 = findViewById(R.id.tv_6);
+        tv7 = findViewById(R.id.tv_7);
 
         tv1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,14 +65,14 @@ public class ServiceActivity extends AppCompatActivity {
                 MyService.stopRiderService(ServiceActivity.this);
             }
         });
-        tv1.setOnClickListener(new View.OnClickListener() {
+        tv3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MyService2.startRiderService(ServiceActivity.this);
             }
         });
 
-        tv2.setOnClickListener(new View.OnClickListener() {
+        tv4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MyService2.stopRiderService(ServiceActivity.this);
@@ -73,18 +83,24 @@ public class ServiceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 send();
+//                createChannel();
             }
         });
         tv6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//               if (mNotificationManager!=null){
-//                   mNotificationManager.cancel(DIALOG_TIME_SEC);
-//               }
-
+               if (mNotificationManager!=null){
+                   mNotificationManager.cancel(DIALOG_TIME_SEC);
+               }
+            }
+        });
+        tv7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 if (mNotificationManager!=null){
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        mNotificationManager.deleteNotificationChannel(LOCAL_CHANNEL_ID);
+//                        mNotificationManager.deleteNotificationChannel(LOCAL_CHANNEL_ID);
+                        test();
                     }
                 }
             }
@@ -103,11 +119,6 @@ public class ServiceActivity extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             mChannel = new NotificationChannel(LOCAL_CHANNEL_ID,
                     "Channel Notifications", NotificationManager.IMPORTANCE_HIGH);
-            //  mChannel.setDescription(description);
-            //  mChannel.enableLights(true);
-            //  mChannel.setLightColor(Color.RED);
-            //  mChannel.enableVibration(true);
-            //  mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
             mNotificationManager.createNotificationChannel(mChannel);
         }
         Intent intent = new Intent(this, TestActivity.class);
@@ -126,6 +137,122 @@ public class ServiceActivity extends AppCompatActivity {
                 .setFullScreenIntent(pendingIntent, true)
                 .build();
         mNotificationManager.notify(DIALOG_TIME_SEC, notification);
+    }
+
+
+    private void createChannel(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = "chat";
+            String channelName = "通知消息";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            createNotificationChannel(channelId, channelName, importance);
+
+            channelId = "email";
+            channelName = "通知邮件";
+            importance = NotificationManager.IMPORTANCE_DEFAULT;
+            createNotificationChannel(channelId, channelName, importance);
+
+            channelId = "subscribe";
+            channelName = "通知订阅";
+            importance = NotificationManager.IMPORTANCE_LOW;
+            createNotificationChannel(channelId, channelName, importance);
+        }
+    }
+
+    public void sendChatMsg() {
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = manager.getNotificationChannel("chat");
+            if (channel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
+                Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel.getId());
+                startActivity(intent);
+                Toast.makeText(this, "请手动将通知打开", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        Notification notification = new NotificationCompat.Builder(this, "chat")
+                .setContentTitle("收到聊天消息")
+                .setContentText("在吗，找你有事情")
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_notification_music_logo)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_notification_music_logo))
+                .setAutoCancel(true)
+                .build();
+        manager.notify(1, notification);
+    }
+
+    public void sendSubscribeMsg() {
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notification = new NotificationCompat.Builder(this, "subscribe")
+                .setContentTitle("收到订阅消息")
+                .setContentText("告诉你个好消息！")
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_notification_music_logo)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_notification_music_logo))
+                .setAutoCancel(true)
+                .build();
+        manager.notify(2, notification);
+    }
+
+    public void sendEmailMsg() {
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notification = new NotificationCompat.Builder(this, "subscribe")
+                .setContentTitle("收到邮件消息")
+                .setContentText("逗比收到一封邮件")
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_notification_music_logo)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_notification_music_logo))
+                .setAutoCancel(true)
+                .build();
+        manager.notify(3, notification);
+    }
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void createNotificationChannel(String channelId, String channelName, int importance) {
+        NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+        if (mNotificationManager==null){
+            mNotificationManager = (NotificationManager) getSystemService(
+                    NOTIFICATION_SERVICE);
+        }
+        mNotificationManager.createNotificationChannel(channel);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void test(){
+        if (mNotificationManager!=null){
+            List<NotificationChannelGroup> notificationChannelGroups =
+                    mNotificationManager.getNotificationChannelGroups();
+            if (notificationChannelGroups!=null){
+                for (int i=0 ; i<notificationChannelGroups.size() ; i++){
+                    NotificationChannelGroup notificationChannelGroup = notificationChannelGroups.get(i);
+                    if (notificationChannelGroup == null){
+                        continue;
+                    }
+                    String id = notificationChannelGroup.getId();
+                    CharSequence name = notificationChannelGroup.getName();
+                    Log.d("notification group " , id + " , " + name);
+                }
+            }
+        }
+
+
+        if (mNotificationManager!=null){
+            List<NotificationChannel> notificationChannels = mNotificationManager.getNotificationChannels();
+            if (notificationChannels!=null){
+                for (int i=0 ; i<notificationChannels.size() ; i++){
+                    NotificationChannel notificationChannel = notificationChannels.get(i);
+                    if (notificationChannel == null){
+                        continue;
+                    }
+                    String id = notificationChannel.getId();
+                    CharSequence name = notificationChannel.getName();
+                    Log.d("notification channel " , id + " , " + name);
+                }
+            }
+        }
+
     }
 
 }

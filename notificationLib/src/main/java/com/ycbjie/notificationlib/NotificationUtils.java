@@ -4,20 +4,22 @@ package com.ycbjie.notificationlib;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
+import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.graphics.Color;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Build;
-import android.widget.RemoteViews;
+import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
+import java.util.List;
+
 import static android.app.Notification.PRIORITY_DEFAULT;
-import static android.app.Notification.VISIBILITY_SECRET;
 
 
 /**
@@ -31,28 +33,54 @@ import static android.app.Notification.VISIBILITY_SECRET;
  */
 public class NotificationUtils extends ContextWrapper {
 
-
-    public static final String CHANNEL_ID = "default";
-    private static final String CHANNEL_NAME = "Default_Channel";
+    private static String CHANNEL_ID = "default";
+    private static String CHANNEL_NAME = "Default_Channel";
     private NotificationManager mManager;
-    private int[] flags;
+    private NotificationChannel channel;
 
     public NotificationUtils(Context base) {
         super(base);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //android 8.0以上需要特殊处理，也就是targetSDKVersion为26以上
-            createNotificationChannel();
+            createNotificationChannel(null,null);
         }
     }
 
+    public NotificationUtils(Context base , String channelId) {
+        super(base);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //android 8.0以上需要特殊处理，也就是targetSDKVersion为26以上
+            createNotificationChannel(channelId,null);
+        }
+    }
+
+    public NotificationUtils(Context base ,String channelId, String channelName) {
+        super(base);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //android 8.0以上需要特殊处理，也就是targetSDKVersion为26以上
+            createNotificationChannel(channelId,channelName);
+        }
+    }
+
+    /**
+     * 8.0以上需要创建通知栏渠道channel
+     */
     @TargetApi(Build.VERSION_CODES.O)
-    private void createNotificationChannel() {
+    private NotificationChannel createNotificationChannel(String channelId , String channelName) {
         //第一个参数：channel_id
-        //第二个参数：channel_name
+        //第二个参数：channel_name，这个是用来展示给用户看的
         //第三个参数：设置通知重要性级别
         //注意：该级别必须要在 NotificationChannel 的构造函数中指定，总共要五个级别；
         //范围是从 NotificationManager.IMPORTANCE_NONE(0) ~ NotificationManager.IMPORTANCE_HIGH(4)
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME,
+        if (!TextUtils.isEmpty(channelId)){
+            CHANNEL_ID = channelId;
+        }
+        if (!TextUtils.isEmpty(channelName)){
+            CHANNEL_NAME = channelName;
+        }
+        channel = new NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT);
         /*channel.canBypassDnd();//是否绕过请勿打扰模式
         channel.enableLights(true);//闪光灯
@@ -66,6 +94,7 @@ public class NotificationUtils extends ContextWrapper {
         channel.setVibrationPattern(new long[]{100, 100, 200});//设置震动模式
         channel.shouldShowLights();//是否会有灯光*/
         getManager().createNotificationChannel(channel);
+        return channel;
     }
 
     /**
@@ -80,10 +109,88 @@ public class NotificationUtils extends ContextWrapper {
     }
 
     /**
+     * 获取创建一个NotificationChannel的对象
+     * @return                          NotificationChannel对象
+     */
+    public NotificationChannel getNotificationChannel(){
+        if (channel == null){
+            channel = createNotificationChannel(null,null);
+        }
+        return channel;
+    }
+
+    /**
+     * 获取创建一个NotificationChannel的对象
+     * @return                          NotificationChannel对象
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public NotificationChannel getNotificationChannel(String channelId){
+        if (TextUtils.isEmpty(channelId)){
+            return getNotificationChannel();
+        }
+        NotificationManager manager = getManager();
+        return manager.getNotificationChannel(channelId);
+    }
+
+    /**
      * 清空所有的通知
      */
     public void clearNotification(){
         getManager().cancelAll();
+    }
+
+    /**
+     * 清空特定的通知
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void clearNotificationChannel(String channelId){
+        if (channelId == null || channelId.length() == 0){
+            return;
+        }
+        NotificationManager manager = getManager();
+        manager.deleteNotificationChannel(channelId);
+    }
+
+    /**
+     * 清空所有的通知
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void clearAllNotification(){
+        NotificationManager manager = getManager();
+        List<NotificationChannel> notificationChannels = manager.getNotificationChannels();
+        if (notificationChannels!=null){
+            for (int i=0 ; i<notificationChannels.size() ; i++){
+                NotificationChannel notificationChannel = notificationChannels.get(i);
+                if (notificationChannel == null){
+                    continue;
+                }
+                String id = notificationChannel.getId();
+                CharSequence name = notificationChannel.getName();
+                Log.d("notification channel " , id + " , " + name);
+                manager.deleteNotificationChannel(id);
+            }
+        }
+    }
+
+    /**
+     * 清空所有的通知
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void clearAllGroupNotification(){
+        NotificationManager manager = getManager();
+        List<NotificationChannelGroup> notificationChannelGroups = manager.getNotificationChannelGroups();
+        if (notificationChannelGroups!=null){
+            for (int i=0 ; i<notificationChannelGroups.size() ; i++){
+                NotificationChannelGroup notificationChannelGroup = notificationChannelGroups.get(i);
+                if (notificationChannelGroup == null){
+                    continue;
+                }
+                String id = notificationChannelGroup.getId();
+                CharSequence name = notificationChannelGroup.getName();
+                Log.d("notification group " , id + " , " + name);
+                manager.deleteNotificationChannel(id);
+            }
+        }
     }
 
     /**
@@ -96,15 +203,16 @@ public class NotificationUtils extends ContextWrapper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //android 8.0以上需要特殊处理，也就是targetSDKVersion为26以上
             //通知用到NotificationCompat()这个V4库中的方法。但是在实际使用时发现书上的代码已经过时并且Android8.0已经不支持这种写法
-            Notification.Builder builder = getChannelNotification(title, content, icon);
+            Notification.Builder builder = getNotificationV4(title, content, icon);
             build = builder.build();
         } else {
             NotificationCompat.Builder builder = getNotificationCompat(title, content, icon);
             build = builder.build();
         }
-        if (flags!=null && flags.length>0){
-            for (int a=0 ; a<flags.length ; a++){
-                build.flags |= flags[a];
+        NotificationParams notificationParams = getNotificationParams();
+        if (notificationParams.flags!=null && notificationParams.flags.length>0){
+            for (int a=0 ; a<notificationParams.flags.length ; a++){
+                build.flags |= notificationParams.flags[a];
             }
         }
         return build;
@@ -122,15 +230,16 @@ public class NotificationUtils extends ContextWrapper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //android 8.0以上需要特殊处理，也就是targetSDKVersion为26以上
             //通知用到NotificationCompat()这个V4库中的方法。但是在实际使用时发现书上的代码已经过时并且Android8.0已经不支持这种写法
-            Notification.Builder builder = getChannelNotification(title, content, icon);
+            Notification.Builder builder = getNotificationV4(title, content, icon);
             build = builder.build();
         } else {
             NotificationCompat.Builder builder = getNotificationCompat(title, content, icon);
             build = builder.build();
         }
-        if (flags!=null && flags.length>0){
-            for (int a=0 ; a<flags.length ; a++){
-                build.flags |= flags[a];
+        NotificationParams notificationParams = getNotificationParams();
+        if (notificationParams.flags!=null && notificationParams.flags.length>0){
+            for (int a=0 ; a<notificationParams.flags.length ; a++){
+                build.flags |= notificationParams.flags[a];
             }
         }
         getManager().notify(notifyId, build);
@@ -145,9 +254,10 @@ public class NotificationUtils extends ContextWrapper {
     public void sendNotificationCompat(int notifyId, String title, String content , int icon) {
         NotificationCompat.Builder builder = getNotificationCompat(title, content, icon);
         Notification build = builder.build();
-        if (flags!=null && flags.length>0){
-            for (int a=0 ; a<flags.length ; a++){
-                build.flags |= flags[a];
+        NotificationParams notificationParams = getNotificationParams();
+        if (notificationParams.flags!=null && notificationParams.flags.length>0){
+            for (int a=0 ; a<notificationParams.flags.length ; a++){
+                build.flags |= notificationParams.flags[a];
             }
         }
         getManager().notify(notifyId, build);
@@ -156,6 +266,7 @@ public class NotificationUtils extends ContextWrapper {
 
     private NotificationCompat.Builder getNotificationCompat(String title, String content, int icon) {
         NotificationCompat.Builder builder;
+        NotificationParams notificationParams = getNotificationParams();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
         } else {
@@ -166,26 +277,26 @@ public class NotificationUtils extends ContextWrapper {
         builder.setContentTitle(title);
         builder.setContentText(content);
         builder.setSmallIcon(icon);
-        builder.setPriority(priority);
-        builder.setOnlyAlertOnce(onlyAlertOnce);
-        builder.setOngoing(ongoing);
-        if (remoteViews!=null){
-            builder.setContent(remoteViews);
+        builder.setPriority(notificationParams.priority);
+        builder.setOnlyAlertOnce(notificationParams.onlyAlertOnce);
+        builder.setOngoing(notificationParams.ongoing);
+        if (notificationParams.remoteViews!=null){
+            builder.setContent(notificationParams.remoteViews);
         }
-        if (intent!=null){
-            builder.setContentIntent(intent);
+        if (notificationParams.intent!=null){
+            builder.setContentIntent(notificationParams.intent);
         }
-        if (ticker!=null && ticker.length()>0){
-            builder.setTicker(ticker);
+        if (notificationParams.ticker!=null && notificationParams.ticker.length()>0){
+            builder.setTicker(notificationParams.ticker);
         }
-        if (when!=0){
-            builder.setWhen(when);
+        if (notificationParams.when!=0){
+            builder.setWhen(notificationParams.when);
         }
-        if (sound!=null){
-            builder.setSound(sound);
+        if (notificationParams.sound!=null){
+            builder.setSound(notificationParams.sound);
         }
-        if (defaults!=0){
-            builder.setDefaults(defaults);
+        if (notificationParams.defaults!=0){
+            builder.setDefaults(notificationParams.defaults);
         }
         //点击自动删除通知
         builder.setAutoCancel(true);
@@ -194,7 +305,8 @@ public class NotificationUtils extends ContextWrapper {
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private Notification.Builder getChannelNotification(String title, String content, int icon){
+    private Notification.Builder getNotificationV4(String title, String content, int icon){
+        NotificationParams notificationParams = getNotificationParams();
         Notification.Builder builder = new Notification.Builder(getApplicationContext(), CHANNEL_ID);
         Notification.Builder notificationBuilder = builder
                 //设置标题
@@ -204,169 +316,99 @@ public class NotificationUtils extends ContextWrapper {
                 //设置通知的图标
                 .setSmallIcon(icon)
                 //让通知左右滑的时候是否可以取消通知
-                .setOngoing(ongoing)
+                .setOngoing(notificationParams.ongoing)
                 //设置优先级
-                .setPriority(priority)
+                .setPriority(notificationParams.priority)
                 //是否提示一次.true - 如果Notification已经存在状态栏即使在调用notify函数也不会更新
-                .setOnlyAlertOnce(onlyAlertOnce)
+                .setOnlyAlertOnce(notificationParams.onlyAlertOnce)
                 .setAutoCancel(true);
-        if (remoteViews!=null){
+        if (notificationParams.remoteViews!=null){
             //设置自定义view通知栏
-            notificationBuilder.setContent(remoteViews);
+            notificationBuilder.setContent(notificationParams.remoteViews);
         }
-        if (intent!=null){
-            notificationBuilder.setContentIntent(intent);
+        if (notificationParams.intent!=null){
+            notificationBuilder.setContentIntent(notificationParams.intent);
         }
-        if (ticker!=null && ticker.length()>0){
+        if (notificationParams.ticker!=null && notificationParams.ticker.length()>0){
             //设置状态栏的标题
-            notificationBuilder.setTicker(ticker);
+            notificationBuilder.setTicker(notificationParams.ticker);
         }
-        if (when!=0){
+        if (notificationParams.when!=0){
             //设置通知时间，默认为系统发出通知的时间，通常不用设置
-            notificationBuilder.setWhen(when);
+            notificationBuilder.setWhen(notificationParams.when);
         }
-        if (sound!=null){
+        if (notificationParams.sound!=null){
             //设置sound
-            notificationBuilder.setSound(sound);
+            notificationBuilder.setSound(notificationParams.sound);
         }
-        if (defaults!=0){
+        if (notificationParams.defaults!=0){
             //设置默认的提示音
-            notificationBuilder.setDefaults(defaults);
+            notificationBuilder.setDefaults(notificationParams.defaults);
         }
-        if (pattern!=null){
+        if (notificationParams.pattern!=null){
             //自定义震动效果
-            notificationBuilder.setVibrate(pattern);
+            notificationBuilder.setVibrate(notificationParams.pattern);
         }
         return notificationBuilder;
     }
 
+    private NotificationParams params;
 
+    public NotificationParams getNotificationParams() {
+        if (params == null){
+            return new NotificationParams();
+        }
+        return params;
+    }
 
-    private boolean ongoing = false;
-    private RemoteViews remoteViews = null;
-    private PendingIntent intent = null;
-    private String ticker = "";
-    private int priority = PRIORITY_DEFAULT;
-    private boolean onlyAlertOnce = false;
-    private long when = 0;
-    private Uri sound = null;
-    private int defaults = 0;
-    private long[] pattern = null;
-
-    /**
-     * 让通知左右滑的时候是否可以取消通知
-     * @param ongoing                   是否可以取消通知
-     * @return
-     */
-    public NotificationUtils setOngoing(boolean ongoing){
-        this.ongoing = ongoing;
+    public NotificationUtils setNotificationParams(NotificationParams params) {
+        this.params = params;
         return this;
     }
 
     /**
-     * 设置自定义view通知栏布局
-     * @param remoteViews               view
+     * 判断通知是否是静默不重要的通知。
+     * 主要是该类通知被用户手动给关闭
+     * @param channel                           通知栏channel
      * @return
      */
-    public NotificationUtils setContent(RemoteViews remoteViews){
-        this.remoteViews = remoteViews;
-        return this;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public boolean isNoImportance(NotificationChannel channel){
+        if (channel.getImportance() == NotificationManager.IMPORTANCE_NONE){
+            return true;
+        }
+        return false;
     }
 
     /**
-     * 设置内容点击
-     * @param intent                    intent
+     * 判断通知是否是静默不重要的通知。
+     * 主要是该类通知被用户手动给关闭
+     * @param channelId                           通知栏channelId
      * @return
      */
-    public NotificationUtils setContentIntent(PendingIntent intent){
-        this.intent = intent;
-        return this;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public boolean isNoImportance(String channelId){
+        NotificationChannel channel = getNotificationChannel(channelId);
+        return isNoImportance(channel);
     }
 
-    /**
-     * 设置状态栏的标题
-     * @param ticker                    状态栏的标题
-     * @return
-     */
-    public NotificationUtils setTicker(String ticker){
-        this.ticker = ticker;
-        return this;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void openChannelSetting(String channelId){
+        NotificationChannel channel = getNotificationChannel(channelId);
+        openChannelSetting(channel);
     }
 
-
-    /**
-     * 设置优先级
-     * 注意：
-     * Android 8.0以及上，在 NotificationChannel 的构造函数中指定，总共要五个级别；
-     * Android 7.1（API 25）及以下的设备，还得调用NotificationCompat 的 setPriority方法来设置
-     *
-     * @param priority                  优先级，默认是Notification.PRIORITY_DEFAULT
-     * @return
-     */
-    public NotificationUtils setPriority(int priority){
-        this.priority = priority;
-        return this;
-    }
-
-    /**
-     * 是否提示一次.true - 如果Notification已经存在状态栏即使在调用notify函数也不会更新
-     * @param onlyAlertOnce             是否只提示一次，默认是false
-     * @return
-     */
-    public NotificationUtils setOnlyAlertOnce(boolean onlyAlertOnce){
-        this.onlyAlertOnce = onlyAlertOnce;
-        return this;
-    }
-
-    /**
-     * 设置通知时间，默认为系统发出通知的时间，通常不用设置
-     * @param when                      when
-     * @return
-     */
-    public NotificationUtils setWhen(long when){
-        this.when = when;
-        return this;
-    }
-
-    /**
-     * 设置sound
-     * @param sound                     sound
-     * @return
-     */
-    public NotificationUtils setSound(Uri sound){
-        this.sound = sound;
-        return this;
-    }
-
-
-    /**
-     * 设置默认的提示音
-     * @param defaults                  defaults
-     * @return
-     */
-    public NotificationUtils setDefaults(int defaults){
-        this.defaults = defaults;
-        return this;
-    }
-
-    /**
-     * 自定义震动效果
-     * @param pattern                  pattern
-     * @return
-     */
-    public NotificationUtils setVibrate(long[] pattern){
-        this.pattern = pattern;
-        return this;
-    }
-
-    /**
-     * 设置flag标签
-     * @param flags                     flags
-     * @return
-     */
-    public NotificationUtils setFlags(int... flags){
-        this.flags = flags;
-        return this;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void openChannelSetting(NotificationChannel channel){
+        if (channel == null){
+            return;
+        }
+        if (channel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
+            Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName());
+            intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel.getId());
+            startActivity(intent);
+        }
     }
 
 }
