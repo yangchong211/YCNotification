@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.yc.notifymessage.CustomNotification;
 import com.ycbjie.notificationlib.NotificationParams;
 import com.ycbjie.notificationlib.NotificationUtils;
 
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_13;
     private TextView tv_14;
     private TextView tv_15;
+    private TextView tv_16;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv_13 = (TextView) findViewById(R.id.tv_13);
         tv_14 = (TextView) findViewById(R.id.tv_14);
         tv_15 = (TextView) findViewById(R.id.tv_15);
+        tv_16= (TextView) findViewById(R.id.tv_16);
     }
 
     private void initListener() {
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv_13.setOnClickListener(this);
         tv_14.setOnClickListener(this);
         tv_15.setOnClickListener(this);
+        tv_16.setOnClickListener(this);
     }
 
     private void initNotificationManager() {
@@ -146,6 +150,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.tv_15:
                 sendNotification15();
+                break;
+            case R.id.tv_16:
+                sendNotification16();
+                break;
+            default:
                 break;
         }
     }
@@ -444,6 +453,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         notificationUtils.sendNotification(15,"新消息来了","周末到了，不用上班了",R.mipmap.ic_launcher);
 
 
+    }
+
+    private void sendNotification16(){
+        new CustomNotification<Void>()
+                .setType(1)
+                .setCollapsible(false)
+                .setTimeOut(3000)
+                .setPriority(100)
+                .setNotificationView(new MyNotifyView(this))
+                .show();
     }
 
 }
