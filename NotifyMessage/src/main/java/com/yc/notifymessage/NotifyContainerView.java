@@ -21,15 +21,15 @@ public class NotifyContainerView extends FrameLayout {
     private boolean mIsConsumeTouchEvent;
     private OnDismissListener mOnDismissListener;
 
-    NotifyContainerView(@NonNull Context context) {
-        super(context);
+    public NotifyContainerView(@NonNull Context context) {
+        this(context,null);
     }
 
-    NotifyContainerView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+    public NotifyContainerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs,0);
     }
 
-    NotifyContainerView(@NonNull Context context,
+    public NotifyContainerView(@NonNull Context context,
                         @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
