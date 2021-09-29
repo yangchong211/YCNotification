@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tv_14;
     private TextView tv_15;
     private TextView tv_16;
+    private TextView tv_17;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv_14 = (TextView) findViewById(R.id.tv_14);
         tv_15 = (TextView) findViewById(R.id.tv_15);
         tv_16= (TextView) findViewById(R.id.tv_16);
+        tv_17= (TextView) findViewById(R.id.tv_17);
     }
 
     private void initListener() {
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv_14.setOnClickListener(this);
         tv_15.setOnClickListener(this);
         tv_16.setOnClickListener(this);
+        tv_17.setOnClickListener(this);
     }
 
     private void initNotificationManager() {
@@ -153,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.tv_16:
                 sendNotification16();
+                break;
+            case R.id.tv_17:
+                sendNotification17();
                 break;
             default:
                 break;
@@ -465,4 +471,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .show();
     }
 
+
+    private void sendNotification17(){
+        new CustomNotification<Void>()
+                .setType(1)
+                .setCollapsible(false)
+                .setTimeOut(5000)
+                .setPriority(60)
+                .setNotificationView(new MyNotifyView2(this))
+                .show();
+    }
 }

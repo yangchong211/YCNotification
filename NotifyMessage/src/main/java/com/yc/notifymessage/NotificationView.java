@@ -36,7 +36,16 @@ public abstract class NotificationView<T> {
             throw new IllegalArgumentException("layout res is illegal!");
         }
         mView = LayoutInflater.from(mActivity).inflate(layoutRes, null);
+        setView(mView);
         setClickableViewListener(mView);
+    }
+
+    /**
+     * view相关操作
+     * @param view                  view
+     */
+    private void setView(View view) {
+
     }
 
     public View getView() {

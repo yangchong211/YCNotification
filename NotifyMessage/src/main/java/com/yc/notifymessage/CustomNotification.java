@@ -6,9 +6,14 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
-
 /**
- * 用于展示顶部样式
+ * <pre>
+ *     @author yangchong
+ *     blog  : https://github.com/yangchong211
+ *     time  : 2018/11/9
+ *     desc  : 用于展示顶部样式
+ *     revise:
+ * </pre>
  */
 public class CustomNotification<T> implements Parcelable {
 
@@ -105,6 +110,21 @@ public class CustomNotification<T> implements Parcelable {
         return this;
     }
 
+    public CustomNotification<T> setData(T data) {
+        mData = data;
+        return this;
+    }
+
+    public CustomNotification<T> setData(T data, boolean rebind) {
+        mData = data;
+        if (rebind) {
+            getNotificationView().bindNotification(this);
+        }
+        return this;
+    }
+
+
+
     public NotificationView<T> getNotificationView() {
         return mView;
     }
@@ -134,18 +154,6 @@ public class CustomNotification<T> implements Parcelable {
         return mView == null ? null : mView.getActivity();
     }
 
-    public CustomNotification<T> setData(T data) {
-        mData = data;
-        return this;
-    }
-
-    public CustomNotification<T> setData(T data, boolean rebind) {
-        mData = data;
-        if (rebind) {
-            getNotificationView().bindNotification(this);
-        }
-        return this;
-    }
 
     @Nullable
     public T getData() {

@@ -141,16 +141,19 @@ public class NotificationManager {
     protected void showNotification(@NonNull final CustomNotification notification) {
         try {
             if (mNodeLinkedList.isEmpty()) {
+                //链表如果是空的，则插入数据，并获取第一个展示
                 insertNotificationLocked(notification);
                 mNodeLinkedList.getFirst().handleShow();
             } else {
                 if (notification.mType == mNodeLinkedList.getFirst().mNotification.mType) {
                     insertNotificationLocked(notification);
                     NotificationNode first = mNodeLinkedList.getFirst();
-                    if (!first.isShowing()) { // 如果当前 notification 还没有展示，则展示
+                    if (!first.isShowing()) {
+                        // 如果当前 notification 还没有展示，则展示
                         first.handleShow();
                     }
                 } else {
+                    //判断改通知的优先级是否比当前队头的通知高
                     boolean showImmediately = isHigherPriority(notification);
                     if (showImmediately) {
                         final NotificationNode oldFirst = mNodeLinkedList.getFirst();

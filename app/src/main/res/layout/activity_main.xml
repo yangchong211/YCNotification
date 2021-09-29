@@ -152,6 +152,15 @@
             android:layout_marginTop="10dp"
             android:background="@color/bg"
             android:padding="10dp"/>
+
+        <TextView
+            android:id="@+id/tv_17"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="17.发送多个自定义通知"
+            android:layout_marginTop="10dp"
+            android:background="@color/bg"
+            android:padding="10dp"/>
     </LinearLayout>
 
 </ScrollView>

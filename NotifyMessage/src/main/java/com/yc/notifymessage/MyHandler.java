@@ -16,7 +16,6 @@ public class MyHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
-
         if (mWeakReference == null || mWeakReference.get() == null) {
             return;
         }

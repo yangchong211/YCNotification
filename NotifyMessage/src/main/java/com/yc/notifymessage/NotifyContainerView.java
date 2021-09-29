@@ -10,13 +10,19 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-
+/**
+ * <pre>
+ *     @author yangchong
+ *     blog  : https://github.com/yangchong211
+ *     time  : 2018/11/9
+ *     desc  : 上划隐藏的布局
+ *     revise:
+ * </pre>
+ */
 public class NotifyContainerView extends FrameLayout {
 
     private static final int SLOP = 10;
-
     private float mLastY;
-    private float mCurrentY;
     private boolean mIsCollapsible;
     private boolean mIsConsumeTouchEvent;
     private OnDismissListener mOnDismissListener;
@@ -58,7 +64,7 @@ public class NotifyContainerView extends FrameLayout {
                 if (mIsConsumeTouchEvent) {
                     break;
                 }
-                mCurrentY = event.getY();
+                float mCurrentY = event.getY();
                 if (mLastY - mCurrentY > SLOP) {
                     View child = getChildAt(0);
                     if (child != null) {
@@ -71,8 +77,6 @@ public class NotifyContainerView extends FrameLayout {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                mIsConsumeTouchEvent = false;
-                break;
             case MotionEvent.ACTION_CANCEL:
                 mIsConsumeTouchEvent = false;
                 break;

@@ -33,7 +33,8 @@ public class NotificationNode {
     public static final int ANIM_DURATION = 200;
 
     protected CustomNotification mNotification;
-    public boolean mIsShowing; // 用于标志改 Notification 是否展示了
+    // 用于标志改 Notification 是否展示
+    public boolean mIsShowing;
     @Nullable
     private NotifyContainerView mNotificationContainerView;
     @Nullable
@@ -47,25 +48,6 @@ public class NotificationNode {
                             NotificationManager notificationManager) {
         mNotification = notification;
         mNotificationManager = notificationManager;
-    }
-
-    private int getNotificationLocationY(Context context) {
-        if (context instanceof Activity) {
-            Activity activity = (Activity) context;
-            Window window = activity.getWindow();
-            if (window == null) {
-                return 0;
-            }
-            View view = window.findViewById(android.R.id.content);
-            if (view == null) {
-                return 0;
-            }
-            int[] location = new int[2];
-            view.getLocationOnScreen(location);
-            return location[1];
-        } else {
-            return 0;
-        }
     }
 
     int getPriority() {
@@ -188,7 +170,7 @@ public class NotificationNode {
                 | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         mLayoutParams.gravity = Gravity.TOP;
         mLayoutParams.x = 0;
-        mLayoutParams.y = getNotificationLocationY(context);
+        mLayoutParams.y = NotificationUtils.getNotificationLocationY(context);
 
         mNotificationContainerView = new NotifyContainerView(context);
         ViewGroup.LayoutParams vl = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
