@@ -1,2 +1,2 @@
-include ':app', ':notificationLib'
+include ':app', ':NotificationLib'
 include ':NotifyMessage'
