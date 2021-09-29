@@ -79,7 +79,7 @@ public class NotificationManager {
         }
         boolean isHead = notificationNode == mNodeLinkedList.getFirst();
         removeNotificationNode(notificationNode);
-        notificationNode.mIsShowing = false;
+        notificationNode.changeIsShowing(false);
         if (isHead) {
             notificationNode.handleHide(new AnimatorListenerAdapter() {
                 @Override
