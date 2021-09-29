@@ -9,8 +9,15 @@ import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 
+
 /**
- * 提供通知样式的 View 的类
+ * <pre>
+ *     @author yangchong
+ *     blog  : https://github.com/yangchong211
+ *     time  : 2018/11/9
+ *     desc  : 通知栏 提供通知样式的 View 的类
+ *     revise:
+ * </pre>
  */
 public abstract class NotificationView<T> {
 

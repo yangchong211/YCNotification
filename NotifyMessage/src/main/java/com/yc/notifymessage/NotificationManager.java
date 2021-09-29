@@ -11,7 +11,15 @@ import androidx.annotation.Nullable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-
+/**
+ * <pre>
+ *     @author yangchong
+ *     blog  : https://github.com/yangchong211
+ *     time  : 2018/11/9
+ *     desc  : 通知栏manager类
+ *     revise:
+ * </pre>
+ */
 public class NotificationManager {
 
     public static final int MSG_SHOW = 1;
@@ -21,8 +29,8 @@ public class NotificationManager {
     public static final String BUNDLE_TYPE = "type";
     private static volatile NotificationManager sInstance;
 
-    private LinkedList<NotificationNode> mNodeLinkedList = new LinkedList<>();
-    private MyHandler mHandler = new MyHandler(this);
+    private final LinkedList<NotificationNode> mNodeLinkedList = new LinkedList<>();
+    private final MyHandler mHandler = new MyHandler(this);
 
 
     private NotificationManager() {

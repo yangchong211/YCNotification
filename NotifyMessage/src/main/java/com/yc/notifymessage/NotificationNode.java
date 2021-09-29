@@ -14,8 +14,15 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+
 /**
- * 通知链表节点
+ * <pre>
+ *     @author yangchong
+ *     blog  : https://github.com/yangchong211
+ *     time  : 2018/11/9
+ *     desc  : 通知栏 通知链表节点
+ *     revise:
+ * </pre>
  */
 public class NotificationNode {
 
