@@ -18,76 +18,75 @@
 
 ### 02.使用方法介绍
 - 2.0 如何使用该库
-```
-compile 'cn.yc:notificationLib:1.0.2'
-```
+    ``` java
+    implementation 'com.github.yangchong211.YCNotification:NotificationLib:1.0.4'
+    ```
 - 2.1 最简单调用方式
-```
-NotificationUtils notificationUtils = new NotificationUtils(this);
-notificationUtils.sendNotification(1,"这个是标题","这个是内容",R.mipmap.ic_launcher);
-
-//在NotificationUtils构造方法中
-public NotificationUtils(Context base) {
-    super(base);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        //android 8.0以上需要特殊处理，也就是targetSDKVersion为26以上
-        createNotificationChannel();
-    }
-}
-```
+    ``` java
+    //这三个属性是必须要的，否则异常
+    NotificationUtils notificationUtils = new NotificationUtils(
+            this,"channel_1","通知1");
+    notificationUtils.sendNotification(1,
+            "这个是标题","这个是内容",R.mipmap.ic_launcher);
+    ```
 
 - 2.2 完整使用方法介绍
-```
-long[] vibrate = new long[]{0, 500, 1000, 1500};
-//处理点击Notification的逻辑
-//创建intent
-Intent resultIntent = new Intent(this, TestActivity.class);
-resultIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);           //添加为栈顶Activity
-resultIntent.putExtra("what",3);
-PendingIntent resultPendingIntent = PendingIntent.getActivity(this,3,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-//发送pendingIntent
-
-NotificationUtils notificationUtils = new NotificationUtils(this);
-notificationUtils
-        //让通知左右滑的时候是否可以取消通知
-        .setOngoing(true)
-        //设置内容点击处理intent
-        .setContentIntent(resultPendingIntent)
-        //设置状态栏的标题
-        .setTicker("来通知消息啦")
-        //设置自定义view通知栏布局
-        .setContent(getRemoteViews())
-        //设置sound
-        .setSound(android.provider.Settings.System.DEFAULT_NOTIFICATION_URI)
-        //设置优先级
-        .setPriority(Notification.PRIORITY_DEFAULT)
-        //自定义震动效果
-        .setVibrate(vibrate)
-        //必须设置的属性，发送通知
-        .sendNotification(3,"这个是标题3", "这个是内容3", R.mipmap.ic_launcher);
-```
-
-- 2.3 发送通知处理逻辑，解决8.0通知栏问题
-```
-public void sendNotification(int notifyId, String title, String content , int icon) {
+    ``` java
+    NotificationUtils notificationUtils = new NotificationUtils(this);
+    //设置相关参数
+    NotificationParams notificationParams = new NotificationParams();
+    NotificationParams params = notificationParams
+            //让通知左右滑的时候是否可以取消通知
+            .setOngoing(true)
+            //设置自定义view
+            .setContent(getRemoteViews())
+            //是否提示一次.true - 如果Notification已经存在状态栏即使在调用notify函数也不会更新
+            .setOnlyAlertOnce(true)
+            //设置延迟intent
+            .setContentIntent(intent)
+            //设置状态栏的标题
+            .setTicker("有新消息呢9")
+            //设置自定义view通知栏布局
+            .setContent(getRemoteViews())
+            //设置sound
+            .setSound(Settings.System.DEFAULT_NOTIFICATION_URI)
+            //设置优先级
+            .setPriority(Notification.PRIORITY_DEFAULT)
+            //设置通知时间，默认为系统发出通知的时间，通常不用设置
+            .setWhen(1)
+            //自定义震动效果
+            .setFlags(Notification.FLAG_NO_CLEAR);
+    
+    //必须设置的属性，发送通知
+    notificationUtils.setNotificationParams(params)
+            .sendNotification(9,"有新消息呢9",
+            "这个是标题9", R.mipmap.ic_launcher);
+    ```
+- 2.3 如果你想获取Notification对象，自己发送消息也可以
+    ``` java
+    NotificationUtils notificationUtils = new NotificationUtils(this);
+    notificationUtils.setContent(getRemoteViews());
+    Notification notification = notificationUtils.getNotification("这个是标题4", "这个是内容4", R.mipmap.ic_launcher);
+    notificationUtils.getManager().notify(4,notification);
+    ```
+- 2.4 如何清除所有通知
+    ``` java
+    //清空特定渠道的通知
+    notificationUtils.clearNotificationChannel("channel");
+    //清空所有的通知
+    notificationUtils.clearAllNotification();
+    ```
+- 2.5 其他到一些api说明
+    ``` java
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        //android 8.0以上需要特殊处理，也就是targetSDKVersion为26以上
-        //通知用到NotificationCompat()这个V4库中的方法。但是在实际使用时发现书上的代码已经过时并且Android8.0已经不支持这种写法
-        Notification.Builder builder = getChannelNotification(title, content, icon);
-        getManager().notify(notifyId, builder.build());
-    } else {
-        NotificationCompat.Builder builder = getNotificationCompat(title, content, icon);
-        getManager().notify(notifyId, builder.build());
+        //判断通知是否是静默不重要的通知
+        boolean isNoImportance = notificationUtils.isNoImportance("channel_id");
+        //跳转设置中心
+        notificationUtils.openChannelSetting("channel_id");
     }
-}
-```
-- 2.4 如果你想获取Notification对象，自己发送消息也可以
-```
-NotificationUtils notificationUtils = new NotificationUtils(this);
-notificationUtils.setContent(getRemoteViews());
-Notification notification = notificationUtils.getNotification("这个是标题4", "这个是内容4", R.mipmap.ic_launcher);
-notificationUtils.getManager().notify(4,notification);
-```
+    ```
+
+
 
 
 ### 04.图片展示

@@ -172,6 +172,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationUtils.getManager().deleteNotificationChannel("channel_1");
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //判断通知是否是静默不重要的通知
+            boolean isNoImportance = notificationUtils.isNoImportance("channel_id");
+            //跳转设置中心
+            notificationUtils.openChannelSetting("channel_id");
+            //清空特定渠道的通知
+            notificationUtils.clearNotificationChannel("channel");
+            //清空所有的通知
+            notificationUtils.clearAllNotification();
+        }
     }
 
 
