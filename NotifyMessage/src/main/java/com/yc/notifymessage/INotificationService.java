@@ -2,6 +2,15 @@ package com.yc.notifymessage;
 
 import android.animation.Animator;
 
+/**
+ * <pre>
+ *     @author yangchong
+ *     blog  : https://www.jianshu.com/p/514eb6193a06
+ *     time  : 2018/2/10
+ *     desc  : 接口
+ *     revise:
+ * </pre>
+ */
 public interface INotificationService<T> {
 
     /**
