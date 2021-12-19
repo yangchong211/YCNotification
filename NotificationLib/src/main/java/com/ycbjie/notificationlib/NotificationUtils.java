@@ -263,7 +263,6 @@ public class NotificationUtils extends ContextWrapper {
         getManager().notify(notifyId, build);
     }
 
-
     private NotificationCompat.Builder getNotificationCompat(String title, String content, int icon) {
         NotificationCompat.Builder builder;
         NotificationParams notificationParams = getNotificationParams();
