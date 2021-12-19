@@ -1,14 +1,16 @@
 plugins {
     id 'com.android.library'
 }
+//迁移到jitpack
+apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.0"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 

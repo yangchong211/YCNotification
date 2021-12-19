@@ -277,8 +277,11 @@ public class NotificationUtils extends ContextWrapper {
         builder.setContentTitle(title);
         builder.setContentText(content);
         builder.setSmallIcon(icon);
+        //设置优先级
         builder.setPriority(notificationParams.priority);
+        //是否提示一次.true - 如果Notification已经存在状态栏即使在调用notify函数也不会更新
         builder.setOnlyAlertOnce(notificationParams.onlyAlertOnce);
+        //让通知左右滑的时候是否可以取消通知
         builder.setOngoing(notificationParams.ongoing);
         if (notificationParams.remoteViews!=null){
             builder.setContent(notificationParams.remoteViews);

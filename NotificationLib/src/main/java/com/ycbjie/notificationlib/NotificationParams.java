@@ -15,7 +15,7 @@ import static android.app.Notification.PRIORITY_DEFAULT;
  *     revise:
  * </pre>
  */
-public class NotificationParams {
+public final class NotificationParams {
 
     public boolean ongoing = false;
     public RemoteViews remoteViews = null;
