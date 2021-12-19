@@ -2,7 +2,7 @@ package com.yc.notifymessage;
 
 import android.animation.Animator;
 
-public interface NotificationService<T> {
+public interface INotificationService<T> {
 
     /**
      * 有新通知需要展示

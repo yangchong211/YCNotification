@@ -123,8 +123,6 @@ public class CustomNotification<T> implements Parcelable {
         return this;
     }
 
-
-
     public NotificationView<T> getNotificationView() {
         return mView;
     }

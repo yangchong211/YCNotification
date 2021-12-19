@@ -1,10 +1,8 @@
 package com.yc.notifymessage;
 
 import android.animation.Animator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
-import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +10,7 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 
 
-public class NotificationServiceImpl implements NotificationService<CustomNotification>{
+public class NotificationServiceImpl implements INotificationService<CustomNotification> {
 
     private NotifyContainerView mNotificationContainerView;
     @Nullable
@@ -52,7 +50,7 @@ public class NotificationServiceImpl implements NotificationService<CustomNotifi
                 LoggerUtils.log("handleShow returned: " + reason);
                 return;
             }
-            if (isActivityNotAlive(mNotificationContainerView.getActivity())) {
+            if (NotificationUtils.isActivityNotAlive(mNotificationContainerView.getActivity())) {
                 LoggerUtils.log("handleShow returned: activity is finishing or destroyed!");
                 return;
             }
@@ -68,7 +66,7 @@ public class NotificationServiceImpl implements NotificationService<CustomNotifi
                     if (mNotificationContainerView == null) {
                         LoggerUtils.log("handleShow animation: mNotificationContainerView == null");
                         return;
-                    } else if (isActivityNotAlive(mNotificationContainerView.getActivity())) {
+                    } else if (NotificationUtils.isActivityNotAlive(mNotificationContainerView.getActivity())) {
                         LoggerUtils.log("handleShow animation: mNotificationContainerView.getActivity() is not alive : "
                                 + mNotificationContainerView.getActivity());
                         return;
@@ -165,7 +163,7 @@ public class NotificationServiceImpl implements NotificationService<CustomNotifi
         mNotificationContainerView = new NotifyContainerView(context);
         ViewGroup.LayoutParams vl = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mNotificationContainerView.setLayoutParams(vl);
-        mNotificationContainerView.setOnDismissListener(new NotifyContainerView.OnDismissListener() {
+        mNotificationContainerView.setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss() {
                 mNotificationManager.hideNotification();
@@ -180,15 +178,6 @@ public class NotificationServiceImpl implements NotificationService<CustomNotifi
             }
         });
         mNotificationContainerView.setCollapsible(notification.mIsCollapsible);
-    }
-
-
-    private boolean isActivityNotAlive(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return !(context instanceof Activity) || ((Activity) context).isFinishing()
-                    || ((Activity) context).isDestroyed();
-        }
-        return !(context instanceof Activity) || ((Activity) context).isFinishing();
     }
 
     /**

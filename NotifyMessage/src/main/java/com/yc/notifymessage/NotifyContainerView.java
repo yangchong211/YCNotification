@@ -84,10 +84,6 @@ public class NotifyContainerView extends FrameLayout {
         return super.dispatchTouchEvent(event);
     }
 
-    public interface OnDismissListener {
-        void onDismiss();
-    }
-
     @Nullable
     public Activity getActivity() {
         return getContext() instanceof Activity ? (Activity) getContext() : null;

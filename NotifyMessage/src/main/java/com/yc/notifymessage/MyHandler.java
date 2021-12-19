@@ -19,9 +19,7 @@ public class MyHandler extends Handler {
         if (mWeakReference == null || mWeakReference.get() == null) {
             return;
         }
-
         int action = msg.what;
-
         if (action == NotificationManager.MSG_SHOW) {
             CustomNotification notification = msg.getData()
                     .getParcelable(NotificationManager.BUNDLE_NOTIFICATION);

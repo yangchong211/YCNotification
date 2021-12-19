@@ -2,6 +2,7 @@ package com.yc.notifymessage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import android.view.Window;
 
@@ -27,4 +28,11 @@ public final class NotificationUtils {
         }
     }
 
+    public static boolean isActivityNotAlive(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return !(context instanceof Activity) || ((Activity) context).isFinishing()
+                    || ((Activity) context).isDestroyed();
+        }
+        return !(context instanceof Activity) || ((Activity) context).isFinishing();
+    }
 }

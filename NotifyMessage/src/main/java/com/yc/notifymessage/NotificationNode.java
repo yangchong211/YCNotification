@@ -1,18 +1,8 @@
 package com.yc.notifymessage;
 
 import android.animation.Animator;
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.PixelFormat;
-import android.os.Build;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 
 /**
@@ -33,7 +23,7 @@ public class NotificationNode {
     public static final int ANIM_DURATION = 200;
 
     protected CustomNotification mNotification;
-    private final NotificationService<CustomNotification> notificationService;
+    private final INotificationService<CustomNotification> notificationService;
 
     public NotificationNode(CustomNotification notification,
                             NotificationManager notificationManager) {
